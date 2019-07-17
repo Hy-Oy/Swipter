@@ -9,3 +9,4 @@ ok = 0
 # 用户系统：２０００－２９９９
 PHONE_NUM_ERR = 2001
 SMS_SEND_ERR = 2002
+VERIFY_CODE_ERR = 2003

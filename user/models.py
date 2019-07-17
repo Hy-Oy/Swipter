@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 
@@ -36,6 +38,25 @@ class User(models.Model):
     birth_day = models.IntegerField(default=1)
     avater = models.CharField(max_length=256)
     location = models.CharField(choices=LOCATIONS,max_length=32,default='gz')
+
+    @property
+    def age(self):
+        date = datetime.date.today()
+        age = date.year - self.birth_year
+        age = age if date.month > self.birth_month and date.day > self.birth_day else age-1
+        return age
+
+    @property
+    def to_dic(self):
+        return {
+            'phonenum': self.phonenum,
+            'nickname': self.nickname,
+            'sex': self.sex,
+            'avater': self.avater,
+            'location': self.location,
+            'age': self.age,
+
+        }
 
     class Meta:
         db_table = 'users'

@@ -1,6 +1,7 @@
 import random
 import re
 
+
 pattern = re.compile(r'^1[3-9]\d{9}$')
 def is_phonenum(phonenum):
     '''
@@ -19,5 +20,4 @@ def gen_random_code(length=4):
         length = 1
 
     code = random.randrange(10**(length-1), 10**length)
-
     return str(code)
