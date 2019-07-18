@@ -5,6 +5,7 @@ from common import errors, cache_keys
 from common.utils import is_phonenum
 from libs.http import render_json
 from user import logics
+from user.forms import ProfileForm
 from user.models import User
 
 
@@ -39,8 +40,12 @@ def login(request):
     :param request:
     :return:
     """
-    phone_num = request.POST.get('phone_num','')
-    code = request.POST.get('code','')
+    phone_num = request.POST.get('phone_num', '')
+    code = request.POST.get('code', '')
+
+    phone_num = phone_num.strip()
+    code = code.strip()
+
     cache_code = cache.get(cache_keys.VERIFY_CODE_KEY_PREFIX.format(phone_num))
     if cache_code != code:
         return render_json(code=errors.VERIFY_CODE_ERR)
@@ -50,3 +55,19 @@ def login(request):
     request.session['uid'] = user.id
 
     return render_json(data=user.to_dic)
+
+
+def get_profile(request):
+    user = request.user
+
+    return render_json(data=user.profile.to_dic(exclude=['auto_play']))
+
+
+def set_profile(request):
+    user = request.user
+    form = ProfileForm(data=request.POST, instance=user.profile)
+    if form.is_valid():
+        form.save()
+        return render_json()
+    else:
+        return render_json(data=form.errors)
