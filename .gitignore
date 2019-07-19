@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+.qiniu_pythonsdk_hostscache.json
+media/
+
+>>>>>>> master
 
 # Byte-compiled / optimized / DLL files
 .idea
