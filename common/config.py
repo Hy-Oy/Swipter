@@ -13,3 +13,10 @@ YZX_SMS_PARAMS = {
     'param': None,
     'mobile': None
 }
+
+
+# 七牛云配置
+QN_ACCESS_KEY = 'sK9Eycq_GtYgVblNNMocNpTr9QGxBZ8aLiLN_3z7'
+QN_SECRET_KEY = '6C_570tC3tzGQpJ0B8VHLfQc9WVXLxRD58NF10Z9'
+QN_NAME = 'swiper'
+QN_HOST = 'http://puu48irj8.bkt.clouddn.com'

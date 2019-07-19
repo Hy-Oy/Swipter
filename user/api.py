@@ -1,8 +1,14 @@
+import os
+import time
+
+from django.conf import settings
 from django.core.cache import cache
 from django.http import JsonResponse
 
 from common import errors, cache_keys
+from common.hash import my_md5
 from common.utils import is_phonenum
+from libs import qiniuyun
 from libs.http import render_json
 from user import logics
 from user.forms import ProfileForm
@@ -71,3 +77,19 @@ def set_profile(request):
         return render_json()
     else:
         return render_json(data=form.errors)
+
+
+def update_avatar(request):
+    user = request.user
+    avatar = request.FILES.get('avatar')
+    # avatar_name = 'avatar-{}'.format(my_md5(str(time.time())))
+    # avatar_path = logics.avatar_path(avatar_name,avatar)
+    # 将头像上传至七牛云
+    # ret = upload_qiniuyun(avatar_name,avatar_path)
+    # if ret:
+    #     return render_json()
+    # else:
+    #     return render_json(code=errors.AVATAR_UPLOAD_ERR)
+    logics.async_upload_avatar.delay(user, avatar)
+    return render_json()
+
