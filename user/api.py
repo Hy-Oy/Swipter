@@ -90,6 +90,12 @@ def update_avatar(request):
     #     return render_json()
     # else:
     #     return render_json(code=errors.AVATAR_UPLOAD_ERR)
+    # avatar._set_name('aaa.jpg')
+    # print(avatar)
+    # print(avatar.name)
+    # print(avatar._get_name)
+    # print(avatar._name)
+    # print(dir(avatar))
     logics.async_upload_avatar.delay(user, avatar)
     return render_json()
 
