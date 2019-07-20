@@ -52,6 +52,9 @@ def upload_qiniuyun(avatar_name, avatar_path):
     :return:
     """
     ret, info = qiniuyun.upload_qiniuyun(avatar_name, avatar_path)
+    print("ret:", ret)
+    print("info:", info)
+
     return True if info.status_code ==200 else False
 
 
