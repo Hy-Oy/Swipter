@@ -1,6 +1,7 @@
 from common import errors
 from libs.http import render_json
 from social import logics
+from social.models import Swiped
 
 
 def like(request):
@@ -10,7 +11,7 @@ def like(request):
         return render_json(code=errors.SID_ERR)
     sid = int(sid)
     matched = logics.like_someone(user.id, sid)
-    return render_json()
+    return render_json(data={'matched': matched})
 
 
 def recommend(request):
@@ -23,11 +24,28 @@ def recommend(request):
 
 
 def dislike(request):
-    return None
+    user = request.user
+    sid = request.POST.get("sid")
+
+    if sid is None:
+        return render_json(code=errors.SID_ERR)
+
+    sid = int(sid)
+
+    Swiped.swipe(uid=user.id, sid=sid, mark='dislike')
+
+    return render_json()
 
 
 def superlike(request):
-    return None
+    user = request.user
+    sid = request.POST.get("sid")
+    if sid is None:
+        return render_json(code=errors.SID_ERR)
+    sid = int(sid)
+    matched = logics.superlike_someone(user.id, sid)
+    return render_json(data={'matched': matched})
+
 
 
 def remind(request):
