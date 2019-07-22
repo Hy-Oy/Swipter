@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 from common import errors
 from common.errors import LogicException
@@ -52,6 +53,25 @@ class Friend(models.Model):
     def make_friends(cls, uid1, uid2):
         uid1, uid2 = (uid1, uid2) if uid1 < uid2 else (uid2, uid1)
         return cls.objects.get_or_create(uid1=uid1, uid2=uid2)
+
+
+
+    @classmethod
+    def cencel_friends(cls, uid1, uid2):
+        uid1, uid2 = (uid1, uid2) if uid1 < uid2 else (uid2, uid1)
+
+        cls.objects.filter(uid1=uid1,uid2=uid2).delete()
+        pass
+
+    @classmethod
+    def friend_list(cls, uid):
+        fid_list = []
+        friends = cls.objects.filter(Q(uid1=uid) | Q(uid2=uid))
+
+        for f in friends:
+            fid = f.uid1 if uid == f.uid2 else f.uid2
+            fid_list.append(fid)
+        return fid_list
 
     class Meta:
         db_table = 'friends'

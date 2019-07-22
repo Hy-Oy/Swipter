@@ -1,6 +1,8 @@
 import datetime
 
+from django.core.cache import cache
 
+from common import cache_keys, config, errors
 from social.models import Swiped, Friend
 from user.models import User
 
@@ -54,3 +56,41 @@ def superlike_someone(uid, sid):
         _, created = Friend.objects.make_friends(sid, uid)
         return created
     return False
+
+
+def rewind(user):
+    """
+        撤销上一次滑动操作记录
+        撤销上一次创建的好友关系
+        :param user:
+        :return:
+    """
+    key = cache_keys.SWIPE_LIMIT_PREFIX.format(user.id)
+
+    swipe_times = cache.get(key,0)
+    if swipe_times >= config.SWIPE_LIMIT:
+        raise errors.SwipeLimitError
+
+    swipe = Swiped.objects.filter(uid=user.id).latest("created_time")
+    if swipe.mark in ['like', 'superlike']:
+        Friend.cencel_friends(swipe.uid,swipe.sid)
+    swipe.delete()
+    now = datetime.datetime.now()
+    timeout = 86400 - now.hour * 3600 - now.minute*60 - now.second
+
+    cache.set(key, swipe_times+1, timeout)
+
+
+def like_me(user):
+    """
+        查看喜欢过我的人，过滤掉已经存在的好友
+        :param user:
+        :return:
+    """
+    friend_list = Friend.friend_list(user.id)
+    swipe_list = Swiped.objects.filter(sid=user.id, mark__in=['like','superlike']).exclude(
+        uid__in=friend_list).only('uid')
+
+    liked_me_uid_list = [s.uid for s in swipe_list]
+    return liked_me_uid_list
+

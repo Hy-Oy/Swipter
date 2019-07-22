@@ -8,6 +8,6 @@ urlpatterns = [
     path('dislike', apis.dislike),
     path('superlike', apis.superlike),
     path('remind', apis.remind),
-    path('like-me', apis.me),
+    path('like_me', apis.like_me),
 
 ]

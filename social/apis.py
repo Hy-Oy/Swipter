@@ -2,6 +2,7 @@ from common import errors
 from libs.http import render_json
 from social import logics
 from social.models import Swiped
+from user.models import User
 
 
 def like(request):
@@ -49,8 +50,24 @@ def superlike(request):
 
 
 def remind(request):
-    return None
+    """
+        反悔接口
+        :param request:
+        :return:
+        """
+    user = request.user
+
+    logics.rewind(user)
+
+    return render_json()
 
 
-def me(request):
-    return None
+def like_me(request):
+    user = request.user
+
+    uid_list = logics.like_me(user)
+    like_me_user_list = User.objects.filter(id__in=uid_list)
+
+    users = [u.to_dic for u in like_me_user_list]
+
+    return render_json(data=users)
