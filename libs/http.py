@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import JsonResponse
 
 from common import errors
@@ -15,8 +16,14 @@ def render_json(code=errors.ok,data=None):
     }
     if data:
         result['data'] = data
-    params = {
-        'separators': (',', ':')
 
-    }
+    if settings.DEBUG:
+        params = {
+            'ensure_ascii': False,
+            'indent': 4
+        }
+    else:
+        params = {
+            'separators': (',', ':')
+        }
     return JsonResponse(data=result, json_dumps_params=params)

@@ -31,8 +31,6 @@ class User(models.Model):
         location 常居地
     """
 
-
-
     phonenum = models.CharField(max_length=11, unique=True)
     nickname = models.CharField(max_length=16)
     sex = models.IntegerField(choices=SEXS, default=0)
@@ -40,7 +38,7 @@ class User(models.Model):
     birth_month = models.IntegerField(default=1)
     birth_day = models.IntegerField(default=1)
     avater = models.CharField(max_length=256)
-    location = models.CharField(choices=LOCATIONS,max_length=32,default='gz')
+    location = models.CharField(choices=LOCATIONS,max_length=32, default='gz')
 
     @property
     def age(self):
